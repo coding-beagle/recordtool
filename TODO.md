@@ -1,0 +1,4 @@
+- [ ] Basic Interface
+  - [ ] Form for metadata about album, artist, etc
+  - [ ] Audio device selector
+  - [ ] Audio recording and playback with scrubbable timeline
