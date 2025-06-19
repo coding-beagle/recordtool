@@ -15,9 +15,18 @@ class ButtonWithLabel(ctk.CTkFrame):
             self, width=360, placeholder_text=f"add {label} here")
         self.entry.grid(row=0, column=1, padx=(5, 5), pady=5, sticky="E")
 
+        self.save_cb = save_callback
         self.button = ctk.CTkButton(
-            self, text=button_text if button_text else "Save", width=40, command=lambda: save_callback(self.entry.get()))
+            self, text=button_text if button_text else "Save", width=40, command=lambda: self.call_save_callback())
         self.button.grid(row=0, column=2, padx=(5, 5), pady=5)
+
+    def call_save_callback(self):
+        self.save_cb(self.entry.get())
+        self.master.focus()
+
+    def set_value(self, val):
+        self.entry.delete(0, len(self.entry.get()))
+        self.entry.insert(0, val)
 
 
 class Metadata(ctk.CTkFrame):
@@ -27,19 +36,24 @@ class Metadata(ctk.CTkFrame):
                  **kwargs):
         super().__init__(*args, width=width, height=height, **kwargs)
 
+        self.data = {
+            "AlbumName": '',
+            "Artist": '',
+        }
+
         self.title = ctk.CTkLabel(self, text="Album Metadata:")
         self.title.place(x=10, y=5)
 
         self.album_name = ButtonWithLabel(
-            self, width=200, height=30, label="Album Title", save_callback=self.print_name, button_text="Save")
+            self, width=200, height=30, label="Album Title", save_callback=lambda e: self.set_data('AlbumName', e), button_text="Save")
         self.album_name.place(x=10, y=40)
 
-        self.album_name = ButtonWithLabel(
-            self, width=200, height=30, label="Artist", save_callback=self.print_name, button_text="Save")
-        self.album_name.place(x=10, y=85)
+        self.artist_name = ButtonWithLabel(
+            self, width=200, height=30, label="Artist", save_callback=lambda e: self.set_data('Artist', e), button_text="Save")
+        self.artist_name.place(x=10, y=85)
 
-    def print_name(self, text):
-        print(text)
+    def set_data(self, key, val):
+        self.data[f'{key}'] = val
 
 
 class App(ctk.CTk):
